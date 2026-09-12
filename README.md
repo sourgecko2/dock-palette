@@ -21,9 +21,7 @@ Copy [`examples/init.lua`](examples/init.lua) into `~/.hammerspoon/init.lua`, th
 
 ## Updating
 
-```sh
-a `git pull` followed by a reload is all an update needs.
-```
+a `git pull` followed by a config reload of Hammerspoon is all an update needs.
 
 ## Usage
 
@@ -37,13 +35,6 @@ To skip the app step for apps you use constantly, bind app hotkeys:
 
 ```lua
 spoon.DockPalette:bindAppHotkeys({ ["com.apple.Safari"] = { { "cmd", "alt", "ctrl", "shift" }, "s" } })
-```
-
-## Development
-
-```sh
-brew install luarocks stylua && luarocks install luacheck
-bash scripts/check.sh    # luacheck, stylua --check (same as CI)
 ```
 
 ## Licence
