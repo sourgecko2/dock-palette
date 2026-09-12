@@ -11,10 +11,13 @@ You need macOS 26 or later and Hammerspoon 1.1 or later, with Accessibility acce
 ```sh
 git clone https://github.com/sourgecko2/dock-palette.git ~/Developer/dock-palette
 ~/Developer/dock-palette/scripts/install.sh
-```git remote add origin https://github.com/sourgecko2/dock-palette.git
+```
+
+```sh
+git remote add origin https://github.com/sourgecko2/dock-palette.git
+```
 
 Copy [`examples/init.lua`](examples/init.lua) into `~/.hammerspoon/init.lua`, then choose **Reload Config** from the Hammerspoon menu. The install script symlinks the Spoon.
-```
 
 ## Updating
 
