@@ -1,8 +1,14 @@
 # DockPalette
 
 Command palette for opening macOS windows, regardless of status or location.
-Built as a [Hammerspoon](https://www.hammerspoon.org) Spoon.
-Press a hotkey (SUPER + O by default) and fuzzy-pick an app. You can then jump to any of its windows, even ones on another desktop or minimised, all from the keyboard.
+
+![DockPalette demo](https://raw.githubusercontent.com/sourgecko2/dock-palette/media/demo.gif)
+
+Most Mac window switchers are paid, closed-source menu-bar apps. DockPalette does the same job, but it's free and open source.
+
+- **Free and hackable.** No license fee, and since it's just Lua, you can read exactly what it does or bend it to your workflow.
+- **Two-stage fuzzy palette.** Press the hotkey (SUPER + O by default), fuzzy-pick an app, then fuzzy-pick one of its windows, without leaving your keyboard. No more scanning a flat list of every window on your Mac.
+- **Fits into an existing [Hammerspoon](https://www.hammerspoon.org) setup.** If you're already scripting hotkeys, spaces, or window layout in Hammerspoon, DockPalette is just another Spoon, not a separate app competing for Accessibility permissions and menu-bar space.
 
 ## Quick start
 
