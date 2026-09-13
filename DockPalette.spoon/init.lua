@@ -118,6 +118,8 @@ function obj:init()
   self._apps = {}
   self._choosers = {}
   self._appHotkeys = {}
+  self._dockRankFn = nil
+  self._dockRankRefreshing = false
   return self
 end
 
@@ -240,24 +242,40 @@ function obj:_runningApps()
   return apps
 end
 
--- Reads the Dock's item order and returns a function mapping an app name to its position
--- (1 = leftmost), or nil if the order couldn't be read. Names are matched exactly, as System
--- Events reports them, which is normally the app's display name.
+-- Returns a function mapping an app name to its Dock position (1 = leftmost), or nil if the
+-- order hasn't been read yet. Names are matched exactly, as System Events reports them, which
+-- is normally the app's display name.
+--
+-- Reading the Dock's order goes through System Events over Apple Events, which can take a
+-- noticeable fraction of a second — too slow to do synchronously on every summon. Instead this
+-- returns whatever was cached from the last read (nil the very first time) and kicks off a
+-- background refresh for next time, so the palette never waits on it.
 function obj:_dockRank()
-  local names, err = dock.order()
-  if names == nil then
-    self.logger.w("Couldn't read the Dock's order: " .. tostring(err))
-    return nil
+  self:_refreshDockRank()
+  return self._dockRankFn
+end
+
+function obj:_refreshDockRank()
+  if self._dockRankRefreshing then
+    return
   end
-  local ranks = {}
-  for i, name in ipairs(names) do
-    if ranks[name] == nil then
-      ranks[name] = i
+  self._dockRankRefreshing = true
+  dock.orderAsync(function(names, err)
+    self._dockRankRefreshing = false
+    if names == nil then
+      self.logger.w("Couldn't read the Dock's order: " .. tostring(err))
+      return
     end
-  end
-  return function(name)
-    return name and ranks[name]
-  end
+    local ranks = {}
+    for i, name in ipairs(names) do
+      if ranks[name] == nil then
+        ranks[name] = i
+      end
+    end
+    self._dockRankFn = function(name)
+      return name and ranks[name]
+    end
+  end)
 end
 
 function obj:_pickApp(placeholder, onApp)
