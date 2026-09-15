@@ -147,9 +147,11 @@ function obj:_rowsFor(choices)
 end
 
 -- The screen point the chooser's top-left corner should sit at, fixed regardless of the
--- current row count. Falls back to hs.chooser's own centering if the screen is unavailable.
+-- current row count. Anchored to whichever screen holds the mouse pointer, not necessarily the
+-- one with the active window, so the palette always opens where the user is looking. Falls back
+-- to hs.chooser's own centering if no screen is available.
 function obj:_anchorPoint()
-  local screen = hs.screen.mainScreen()
+  local screen = hs.mouse.getCurrentScreen() or hs.screen.mainScreen()
   local frame = screen and screen:frame()
   if frame == nil then
     return nil
@@ -339,6 +341,15 @@ function obj:_run(app, action)
   if not ok then
     return self:_fail(("Couldn’t select “%s”: %s"):format(action.title or "?", reason))
   end
+
+  -- Bring the picked window to whichever screen the pointer is on, not necessarily the one
+  -- holding the currently active window, so it lands where the user is looking.
+  local win = app:focusedWindow()
+  local pointerScreen = hs.mouse.getCurrentScreen()
+  if win and pointerScreen and win:screen() ~= pointerScreen then
+    win:moveToScreen(pointerScreen, true)
+  end
+
   if app:isHidden() then
     app:unhide()
   end
